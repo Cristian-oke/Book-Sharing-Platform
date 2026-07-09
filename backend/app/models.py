@@ -28,6 +28,8 @@ class Book(db.Model):
     description = db.Column(db.Text, nullable=True)
     status = db.Column(db.String(50), default="Noua")       # noua, buna, uzata
     availability = db.Column(db.String(50), default="Disponibila") # disponibila, imprumutata
+
+    image_url = db.Column(db.Text, nullable=True)
     
     # foreign key care leaga cartea de utilizatorul care o detine
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)

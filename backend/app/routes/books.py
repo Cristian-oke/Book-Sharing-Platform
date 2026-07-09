@@ -100,6 +100,8 @@ def update_book(book_id):
         book.status = validated_data['status']
     if 'availability' in validated_data:
         book.availability = validated_data['availability']
+    if 'image_url' in validated_data:
+        book.image_url = validated_data['image_url']
         
     db.session.commit()
     

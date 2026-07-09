@@ -56,7 +56,13 @@ class BookSchema(ma.SQLAlchemySchema):
         required=False, 
         validate=validate.OneOf(["Disponibila", "Imprumutata"], error="Disponibilitatea poate fi doar: Disponibila sau Imprumutata.")
     )
+
+    image_url = fields.String(required=False, allow_none=True)
     user_id = fields.Int(dump_only=True)
+    city = fields.Function(
+    lambda obj: User.query.get(obj.user_id).city if obj.user_id else "Nespecificat", 
+    dump_only=True
+)
 
 #instante ale schemelor pentru a fi folosite in rute
 book_schema = BookSchema()

@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 
+from flask_cors import CORS
 
 # initializare extensii ca si obiecte
 db = SQLAlchemy()
@@ -14,6 +15,7 @@ jwt = JWTManager()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app)
 
     # configurare baza de date si JWT
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'postgresql://postgres:postgres@localhost:5432/booksharing_db')
