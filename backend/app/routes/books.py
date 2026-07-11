@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app import db
-from app.models import Book, User
+from app.models import Book, User,Review
 from app.schemas import book_schema, books_schema
 from marshmallow import ValidationError
 
@@ -22,6 +22,7 @@ def add_book():
         description=data.get('description'),
         status=data.get('status', 'Noua'),
         availability=data.get('availability', 'Disponibila'),
+        image_url=data.get('image_url'),
         user_id=int(get_jwt_identity()) #legarea cartii de userul logat
     )
     
@@ -36,14 +37,13 @@ def add_book():
 #afisarea tuturor cartilor
 @books_bp.route('/view-books', methods=['GET'])
 def get_all_books():
-   
     title_query = request.args.get('title')
     author_query = request.args.get('author')
     city_query = request.args.get('city')
 
     query = Book.query.join(User)
     
-    #aplicare dinamic filtre introduse de utilizator
+    #aplicare dinamica filtre introduse de utilizator
     if title_query:
         query = query.filter(Book.title.ilike(f"%{title_query}%"))
         
@@ -54,7 +54,18 @@ def get_all_books():
         query = query.filter(User.city.ilike(f"%{city_query}%"))
         
     books = query.all()
-    return jsonify(books_schema.dump(books)), 200
+    serialized_books = books_schema.dump(books)
+    for book_data, book_obj in zip(serialized_books, books):
+        owner_reviews = Review.query.filter_by(user_id=book_obj.user_id).all()
+        
+        if owner_reviews:
+            media = sum([r.rating for r in owner_reviews]) / len(owner_reviews)
+        else:
+            media = 0.0
+        book_data['owner_rating'] = round(media, 2)
+        book_data['city'] = book_obj.owner.city if book_obj.owner else "Nespecificat"
+
+    return jsonify(serialized_books), 200
 
 #stege cartea -doar proprietarul sau admin
 @books_bp.route('/delete/<int:book_id>', methods=['DELETE'])
@@ -122,3 +133,12 @@ def view_user_books(user_id):
         },
         "books": books_schema.dump(books)
     }), 200
+
+#afisare carti proprii
+@books_bp.route('/my-books', methods=['GET'])
+@jwt_required()
+def get_my_books():
+    current_user_id = int(get_jwt_identity())
+    my_books = Book.query.filter_by(user_id=current_user_id).all()
+    
+    return jsonify(books_schema.dump(my_books)), 200
