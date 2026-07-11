@@ -5,12 +5,7 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    component: HomeView
-  },
-  {
-    path: '/book/:id',
-    name: 'Detalii Carte',
-    component: () => import('../views/BookDetailsView.vue')
+    component: () => import('../views/HomeView.vue')
   },
   {
     path: '/profile',
@@ -31,6 +26,11 @@ const routes = [
     path: '/login',
     name: 'Autentificare',
     component: () => import('../views/LoginView.vue')
+  },
+  {
+    path: '/user/:id',
+    name: 'UserProfile',
+    component: () => import('../views/UserProfileView.vue')
   }
 ]
 
