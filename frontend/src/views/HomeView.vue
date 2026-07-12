@@ -14,6 +14,25 @@ const errorMessage = ref('')
 const API_URL = 'http://localhost:5000/Book_Sharing/books/view-books' 
 const BASE_URL = 'http://localhost:5000'
 
+//aflarea userului curent logat
+const currentUserId = computed(() => {
+  if (!token.value) return null
+  
+  try {
+    const base64Url = token.value.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+    const decoded = JSON.parse(jsonPayload)
+    
+    return decoded.sub ? parseInt(decoded.sub) : null
+  } catch (error) {
+    console.error("Eroare la decodificarea token-ului:", error)
+    return null
+  }
+})
+
 const fetchBooks = async () => {
   try {
     isLoading.value = true
@@ -85,8 +104,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
           v-model="searchQuery" 
           type="text" 
           placeholder="Caută după titlu, autor sau orașul proprietarului..." 
-          class="search-input"
-        />
+          class="search-input"/>
         <span v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">✕</span>
       </div>
     </header>
@@ -131,20 +149,27 @@ const handleRequestBook = async (bookId, bookTitle) => {
         </div>
         
         <div class="card-footer-buttons">
-          <div class="owner-rating-box">
-            <small>Rating proprietar:</small>
-            <StarRating :rating="book.owner_rating || 0" />
+          <div v-if="currentUserId === book.user_id" class="own-book-message">
+            ℹ️ Această carte îți aparține
           </div>
-          <div class="actions-wrapper">
-            <button class="profile-btn" @click="viewOwnerProfile(book.user_id)">👤 Profil Proprietar</button>
-            <button 
-              v-if="book.availability === 'Disponibila'" 
-              class="request-btn" 
-              @click="handleRequestBook(book.id, book.title)"
-            >
-              ➕ Cere Cartea
-            </button>
-          </div>
+
+          <template v-else>
+            <div class="owner-rating-box">
+              <small>Rating proprietar:</small>
+              <StarRating :rating="book.owner_rating || 0" />
+            </div>
+            
+            <div class="actions-wrapper">
+              <button class="profile-btn" @click="viewOwnerProfile(book.user_id)">👤 Profil Proprietar</button>
+              <button 
+                v-if="book.availability === 'Disponibila'" 
+                class="request-btn" 
+                @click="handleRequestBook(book.id, book.title)"
+              >
+                ➕ Cere Cartea
+              </button>
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -162,12 +187,32 @@ const handleRequestBook = async (bookId, bookTitle) => {
 .loading-state, .api-warning { text-align: center; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
 .api-warning { background-color: #fff3cd; color: #856404; font-size: 0.9rem; }
 
-.books-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)); 
+  gap: 16px; 
+  padding: 20px 0;
+}
 .book-card { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06); border: 1px solid #eef0f2; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.22s, box-shadow 0.22s; }
 .book-card:hover { transform: translateY(-6px); box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12); }
 
-.image-wrapper { position: relative; width: 100%; height: 280px; background-color: #f5f5f5; }
-.book-image { width: 100%; height: 100%; object-fit: cover; }
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px; 
+  background-color: #f4f5f7; 
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.book-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; 
+  padding: 8px; 
+}
 .book-status { position: absolute; top: 12px; left: 12px; font-size: 0.75rem; font-weight: bold; padding: 5px 10px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
 .book-status.available { background-color: #e8f5e9; color: #2e7d32; }
 .book-status.borrowed { background-color: #ffebee; color: #c62828; }
@@ -175,7 +220,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
 .card-body { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
 .book-title { margin: 0 0 5px 0; font-size: 1.15rem; color: #2c3e50; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .book-author { margin: 0 0 12px 0; color: #7f8c8d; font-size: 0.9rem; }
-.meta-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+.meta-tags { display: flex; flex-direction: wrap; gap: 8px; margin-top: auto; }
 .book-city, .book-condition { font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; font-weight: 500; }
 .book-city { background: #eef2f7; color: #34495e; }
 
@@ -196,6 +241,27 @@ const handleRequestBook = async (bookId, bookTitle) => {
 
 .request-btn { background: #42b983; color: white; }
 .request-btn:hover { background: #3aa876; }
-
 .no-results { text-align: center; margin-top: 30px; color: #780606; font-weight: bold; }
+.own-book-message {
+  width: 95%;
+  text-align: center;
+  padding: 8px;
+  background-color: #ebf5fe;
+  color: #1e88e5;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 10px;
+  border:2px dashed #2196f3;
+}
+
+@media (max-width: 1200px) {
+  .books-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  }
+}
+@media (max-width: 768px) {
+  .books-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr)); 
+  }
+}
 </style>

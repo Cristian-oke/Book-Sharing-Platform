@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed,onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { isAuthenticated, token } from '../auth'
@@ -12,6 +12,7 @@ const userId = route.params.id
 const userProfile = ref(null)
 const isLoading = ref(true)
 const errorMsg = ref('')
+
 
 const fetchUserProfile = async () => {
   try {
@@ -28,6 +29,7 @@ const fetchUserProfile = async () => {
     
     
     userProfile.value = {
+      id: Number(booksRes.data.user?.id) || null,
       name: booksRes.data.user?.name || "Utilizator",
       city: booksRes.data.user?.city || "Nespecificat",
       books: booksRes.data.books || [],
@@ -42,6 +44,24 @@ const fetchUserProfile = async () => {
   }
 }
 
+const currentUserId = computed(() => {
+  if (!token.value) return null
+  
+  try {
+    const base64Url = token.value.split('.')[1]
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    }).join(''))
+    const decoded = JSON.parse(jsonPayload)
+    
+    return decoded.sub ? parseInt(decoded.sub) : null
+  } catch (error) {
+    console.error("Eroare la decodificarea token-ului:", error)
+    return null
+  }
+})
+
 //trimitere cerere imprumut carte
 const handleRequestBook = async (bookId, bookTitle) => {
   if (!isAuthenticated.value) {
@@ -53,7 +73,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
   if (confirm(`Vrei să trimiți o cerere de împrumut pentru "${bookTitle}"?`)) {
     try {
       const config = { headers: { Authorization: `Bearer ${token.value}` } }
-      await axios.post(`${BASE_URL}/Book_Sharing/loans/request`, { book_id: bookId }, config)
+      const response = await axios.post(`${BASE_URL}/Book_Sharing/loans/request/${bookId}`, {}, config)
       alert("Cererea a fost trimisă cu succes proprietarului!")
     } catch (err) {
       alert(err.response?.data?.error || "Eroare la trimiterea cererii.")
@@ -71,7 +91,6 @@ onMounted(() => {
     <button class="btn-back" @click="router.back()">⬅️ Înapoi</button>
 
     <div v-if="isLoading" class="loading-box">Se încarcă profilul utilizatorului...</div>
-    
     <div v-else-if="errorMsg" class="error-box">⚠️ {{ errorMsg }}</div>
 
     <div v-else-if="userProfile">
@@ -91,6 +110,50 @@ onMounted(() => {
       </header>
 
       <div class="profile-grid">
+        
+        <section class="profile-section">
+          <h2>📚 Cărțile lui {{ userProfile.name }} ({{ userProfile.books?.length || 0 }})</h2>
+          <div v-if="!userProfile.books || userProfile.books.length === 0" class="empty-msg">
+            Acest utilizator nu are nicio carte adăugată în bibliotecă.
+          </div>
+          <div v-else class="books-grid">
+            <div v-for="book in userProfile.books" :key="book.id" class="profile-book-card">
+              <div class="book-card-main-info">
+                <img :src="book.image_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=150'" class="book-card-img" />
+                <div class="book-card-details">
+                  <h4>{{ book.title }}</h4>
+                  <p class="author">de {{ book.author }}</p>
+                  <div class="badges-row">
+                    <span class="badge" :class="book.availability === 'Disponibila' ? 'Disponibila' : 'Imprumutata'">
+                      {{ book.availability === 'Disponibila' ? 'Disponibilă' : 'Indisponibilă' }}
+                    </span>
+                    <span class="badge status-badge">✨ {{ book.status }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="book-card-actions">
+                <div v-if="currentUserId == book.user_id" class="own-book-profile-msg">
+                  ℹ️ Această carte îți aparține
+                </div>
+                
+                <template v-else>
+                  <button 
+                    v-if="book.availability === 'Disponibila'" 
+                    class="btn-request-book" 
+                    @click="handleRequestBook(book.id, book.title)"
+                  >
+                    ➕ Cere Cartea
+                  </button>
+                  <div v-else class="borrowed-msg">
+                    ❌ Momentan indisponibilă
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="profile-section">
           <h2>⭐ Recenzii primite ({{ userProfile.reviews.length }})</h2>
           <div v-if="userProfile.reviews.length === 0" class="empty-msg">
@@ -108,21 +171,6 @@ onMounted(() => {
           </ul>
         </section>
 
-        <section class="profile-section">
-          <h2>⭐ Recenzii primite ({{ userProfile.reviews?.length || 0 }})</h2>
-          <div v-if="!userProfile.reviews || userProfile.reviews.length === 0" class="empty-msg">
-            Nu există nicio recenzie pentru acest utilizator încă.
-          </div>
-          <ul v-else class="reviews-list">
-            <li v-for="rev in userProfile.reviews" :key="rev.id" class="review-item">
-              <div class="review-top">
-                <span class="reviewer">👤 {{ rev.reviewer_name }}</span>
-                <span class="stars">{{ '⭐'.repeat(rev.rating) }}</span>
-              </div>
-              <p class="review-comment" v-if="rev.comment">„ {{ rev.comment }} ”</p>
-            </li>
-          </ul>
-        </section>
       </div>
     </div>
   </div>
@@ -195,5 +243,50 @@ onMounted(() => {
   color: #95a5a6;
   display: block;
   margin-top: 5px;
+}
+.profile-book-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: #fafbfc;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #e1e4e6;
+  gap: 12px;
+}
+.book-card-main-info {
+  display: flex;
+  gap: 12px;
+}
+.book-card-img {
+  width: 65px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.book-card-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.own-book-profile-msg {
+  width: 95%;
+  text-align: center;
+  padding: 5px;
+  background-color: #ebf5fe;
+  color: #1e88e5;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 10px;
+  border:2px dashed #2196f3;
+}
+.borrowed-msg {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #c62828;
+  background: #ffebee;
+  padding: 6px;
+  border-radius: 4px;
 }
 </style>

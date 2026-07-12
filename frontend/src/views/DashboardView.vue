@@ -242,7 +242,7 @@ const handleRespondToRequest = async (requestId, decision) => {
           </section>
 
           <section class="dash-section">
-          <h3>📥 Cereri primite de la alții</h3>
+          <h3>📥 Cereri active primite de la alții</h3>
           <div v-if="pendingIncomingRequests.length === 0" class="empty-list">
             Nu ai nicio cerere nouă în așteptare.
           </div>
@@ -262,17 +262,17 @@ const handleRespondToRequest = async (requestId, decision) => {
         </section>
 
         <section class="dash-section">
-          <h3>📤 Cererile mele trimise către alții</h3>
+          <h3>📤 Cererile mele active trimise către alții</h3>
           <div v-if="pendingOutgoingRequests.length === 0" class="empty-list">
             Nu ai nicio cerere trimisă care se află în așteptare.
           </div>
           <ul v-else class="request-list" style="padding: 0; margin: 0;">
             <li v-for="req in pendingOutgoingRequests" :key="req.request_id" class="request-item-box">
               <div class="request-text">
-                Ai cerut cartea <strong>{{ req.book?.title }}</strong> de la proprietarul 👤 <strong>{{ req.book?.owner?.name }}</strong> ({{ req.book?.owner?.city }})
+                Ai cerut cartea <strong>{{ req.book?.title }}</strong> de la utilizatorul 👤 <strong>{{ req.book?.owner?.name }}</strong> ({{ req.book?.owner?.city }})
               </div>
               <div>
-                Stadiu cerere: <span class="badge status-badge">{{ req.status }}</span>
+                Status cerere: <span class="badge status-badge">{{ req.status }}</span>
               </div>
             </li>
           </ul>
