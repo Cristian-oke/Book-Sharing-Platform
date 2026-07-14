@@ -18,12 +18,11 @@ const handleAuthClick = () => {
   <div id="app-layout">
     <nav class="navbar">
       <div class="nav-left">
-        <router-link to="/home">📚 Catalog Cărți</router-link> 
-        <router-link to="/dashboard">💻 Dashboard</router-link> 
-        <router-link to="/history">📜 Istoric</router-link> 
-        <router-link to="/profile">👤 Profilul Meu</router-link>
+        <router-link to="/home">📚 Catalog Cărți</router-link>|
+        <router-link to="/dashboard">💻 Dashboard</router-link>|
+        <router-link to="/history">📜 Istoric</router-link>|
+        <router-link to="/profile">👤 Profilul Meu</router-link> 
       </div>
-
       <div class="nav-right">
         <button class="auth-nav-btn" :class="{ 'logged-in': isAuthenticated }" @click="handleAuthClick">
           {{ isAuthenticated ? '🛑 Deconectare' : '🔐 Autentificare' }}
