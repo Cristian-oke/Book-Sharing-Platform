@@ -4,6 +4,7 @@ from app import db
 from app.models import Book, LoanRequest, Loan,User
 from app.schemas import loan_request_schema, loan_requests_schema, loan_response_schema
 from marshmallow import ValidationError
+import datetime
 
 loans_bp = Blueprint('loans', __name__, url_prefix='/Book_Sharing/loans')
 
@@ -153,27 +154,55 @@ def respond_to_request(request_id):
     }), 200
 
 #finalizarea unui imprimut-cartea a fost returnata
-@loans_bp.route('/<int:loan_id>/return', methods=['PUT'])
+@loans_bp.route('/return/<int:loan_id>', methods=['POST'])
 @jwt_required()
 def return_book(loan_id):
     current_user_id = int(get_jwt_identity())
     loan = Loan.query.get_or_404(loan_id)
     book = Book.query.get(loan.book_id)
     
-    if book.user_id != current_user_id:
-        return jsonify({"error": "Doar proprietarul cărții poate confirma returnarea acesteia"}), 403
+    
+    if loan.borrower_id != current_user_id:
+        return jsonify({"error": "Doar persoana care a împrumutat cartea o poate returna."}), 403
+        
     if loan.status != "activ":
         return jsonify({"error": "Acest împrumut este deja finalizat sau inactiv."}), 400
         
     loan.status = "Completed"
-    book.availability = "Disponibila" 
+    loan.return_date = datetime.datetime.utcnow()
+    if book:
+        book.availability = "Disponibila" 
     
     db.session.commit()
     
     return jsonify({
-        "message": "Cartea a fost returnată cu succes- Împrumutul este acum marcat ca finalizat.",
-        "book_title": book.title,
-        "book_id": book.id,
+        "message": "Cartea a fost returnată cu succes proprietarului!",
         "loan_status": loan.status,
-        "book_availability": book.availability
+        "book_availability": book.availability if book else "Disponibila"
     }), 200
+
+
+#afisare toate imprumuturile proprii
+@loans_bp.route('/my-loans', methods=['GET'])
+@jwt_required()
+def get_my_loans():
+    current_user_id = int(get_jwt_identity())
+    loans = Loan.query.filter(Loan.borrower_id == current_user_id).all()
+    
+    result = []
+    for loan in loans:
+        book = Book.query.get(loan.book_id)
+        owner = User.query.get(book.user_id) if book else None
+        
+        result.append({
+            "id": loan.id,
+            "book_title": book.title if book else "Carte Ștearsă",
+            "book_author": book.author if book else "Necunoscut",
+            "owner_id": book.user_id if book else None,
+            "owner_name": owner.name if owner else "Anonim",
+            "start_date": loan.loan_date,
+            "end_date": loan.return_date,
+            "status": loan.status 
+        })
+        
+    return jsonify({"loans": result}), 200
