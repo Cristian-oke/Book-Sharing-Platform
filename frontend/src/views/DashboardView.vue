@@ -47,7 +47,7 @@ const fetchDashboardData = async () => {
     const incomingRes = await axios.get(`${BASE_URL}/Book_Sharing/loans/my-incoming-requests`, config).catch(() => ({ data: [] }))
     const outgoingRes = await axios.get(`${BASE_URL}/Book_Sharing/loans/my-outgoing-requests`, config).catch(() => ({ data: [] }))
     
-    myBooks.value = booksRes.data
+    myBooks.value = booksRes.data.books || []
     incomingRequests.value = incomingRes.data.incoming_requests || []
     outgoingRequests.value = outgoingRes.data.outgoing_requests || []
   } catch (err) {

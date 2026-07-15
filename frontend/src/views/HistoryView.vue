@@ -221,7 +221,7 @@ onMounted(() => {
         </section>
 
         <section class="history-section">
-          <h3>✅ Împrumuturi Finalizate</h3>
+          <h3>✅ Cărți pe care le-ai împrumutat și pe care le-ai returnat</h3>
           <div v-if="completedLoans.length === 0" class="empty-msg">
             Nu ai niciun împrumut finalizat.
           </div>
