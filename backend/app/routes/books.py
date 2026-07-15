@@ -139,6 +139,17 @@ def view_user_books(user_id):
 @jwt_required()
 def get_my_books():
     current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"error": "Utilizatorul nu a fost găsit"}), 404   
     my_books = Book.query.filter_by(user_id=current_user_id).all()
-    
-    return jsonify(books_schema.dump(my_books)), 200
+  
+    #acelasi format ca la view-books pt apelare frontend
+    return jsonify({
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "city": user.city
+        },
+        "books": books_schema.dump(my_books)
+    }), 200
