@@ -63,3 +63,21 @@ def delete_user(user_id):
         return jsonify({"message": "Utilizatorul a fost șters cu succes"}), 200
     else:
         return jsonify({"error": "Acces interzis"}), 403
+    
+
+@admin_bp.route('/view-users', methods=['GET'])
+@jwt_required()
+def get_all_users():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Acces interzis"}), 403
+        
+    users = User.query.all()
+    users_data = [{
+        "id": u.id,
+        "name": u.name,
+        "city": u.city,
+        "role": getattr(u, 'role', 'user')
+    } for u in users]
+    
+    return jsonify(users_data), 200

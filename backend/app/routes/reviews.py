@@ -74,3 +74,13 @@ def delete_review(review_id):
     db.session.delete(review)
     db.session.commit()
     return jsonify({"message": "Recenzia a fost ștearsă cu succes"}), 200
+
+@reviews_bp.route('/all-reviews', methods=['GET'])
+@jwt_required()
+def get_all_reviews_admin():
+    claims = get_jwt()
+    if claims.get("role") != "admin":
+        return jsonify({"error": "Acces interzis"}), 403
+        
+    all_reviews = Review.query.all()
+    return jsonify(reviews_schema.dump(all_reviews)), 200

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from app import db
-from app.models import Book, User,Review
+from app.models import Book, User,Review,LoanRequest,Loan
 from app.schemas import book_schema, books_schema
 from marshmallow import ValidationError
 
@@ -78,9 +78,17 @@ def delete_book(book_id):
     if book.user_id != current_user_id and claims.get("role") != "admin":
         return jsonify({"error": "Nu ai permisiunea să ștergi această carte"}), 403
         
-    db.session.delete(book)
-    db.session.commit()
-    return jsonify({"message": "Cartea a fost ștearsă cu succes"}), 200
+    try:
+        LoanRequest.query.filter_by(book_id=book_id).delete(synchronize_session=False)
+        Loan.query.filter_by(book_id=book_id).delete(synchronize_session=False)
+
+        db.session.delete(book)
+        db.session.commit()        
+        return jsonify({"message": "Cartea și istoricul ei au fost șterse cu succes"}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "A apărut o eroare la ștergerea cărții", "details": str(e)}), 500
 
 #editare carte
 @books_bp.route('/edit/<int:book_id>', methods=['PUT'])
