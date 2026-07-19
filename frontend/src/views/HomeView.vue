@@ -129,7 +129,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
       >
         <div class="image-wrapper">
           <img 
-            :src="book.image_url || 'https://via.placeholder.com/400x500?text=Fara+Imagine'" 
+            :src="book.image_url || '/default-image.jpg'" 
             :alt="book.title" 
             class="book-image"
           />

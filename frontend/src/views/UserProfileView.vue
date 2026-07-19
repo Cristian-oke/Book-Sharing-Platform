@@ -119,7 +119,7 @@ onMounted(() => {
           <div v-else class="books-grid">
             <div v-for="book in userProfile.books" :key="book.id" class="profile-book-card">
               <div class="book-card-main-info">
-                <img :src="book.image_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=150'" class="book-card-img" />
+                <img :src="book.image_url || '/default-image.jpg'" class="book-card-img" />
                 <div class="book-card-details">
                   <h4>{{ book.title }}</h4>
                   <p class="author">de {{ book.author }}</p>

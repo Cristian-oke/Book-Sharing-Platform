@@ -43,7 +43,7 @@ const fetchDashboardData = async () => {
   try {
     isLoadingDashboard.value = true
     const config = getAuthConfig()
-    const booksRes = await axios.get(`${BASE_URL}/Book_Sharing/books/my-books`, config).catch(() => ({ data: [] }))
+    const booksRes = await axios.get(`${BASE_URL}/Book_Sharing/books/my-books`, config).catch(() => ({ data: { books: [] } }))
     const incomingRes = await axios.get(`${BASE_URL}/Book_Sharing/loans/my-incoming-requests`, config).catch(() => ({ data: [] }))
     const outgoingRes = await axios.get(`${BASE_URL}/Book_Sharing/loans/my-outgoing-requests`, config).catch(() => ({ data: [] }))
     
@@ -225,7 +225,7 @@ const handleRespondToRequest = async (requestId, decision) => {
             <ul v-else class="book-list">
               <li v-for="book in myBooks" :key="book.id" class="book-item">
                 <div class="book-info">
-                  <img :src="book.image_url || 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=100'" class="book-thumb" />
+                  <img :src="book.image_url || '/default-image.jpg'"  class="book-thumb" />
                   <div>
                     <strong>{{ book.title }}</strong>
                     <p>{{ book.author }}</p>
