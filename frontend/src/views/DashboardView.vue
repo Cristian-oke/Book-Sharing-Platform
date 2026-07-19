@@ -225,7 +225,7 @@ const handleRespondToRequest = async (requestId, decision) => {
             <ul v-else class="book-list">
               <li v-for="book in myBooks" :key="book.id" class="book-item">
                 <div class="book-info">
-                  <img :src="book.image_url || '/default-image.jpg'"  class="book-thumb" />
+                  <img :src="book.image_url || '/default-image.jpg'" class="book-thumb" />
                   <div>
                     <strong>{{ book.title }}</strong>
                     <p>{{ book.author }}</p>
@@ -315,17 +315,17 @@ const handleRespondToRequest = async (requestId, decision) => {
             <div class="form-group half">
               <label>Starea fizică a cărții</label>
               <select v-model="status">
-                <option value="Noua">Nouă (Nepătrunsă)</option>
-                <option value="Buna">Bună (Urme normale de citire)</option>
-                <option value="Uzata">Uzată (Copertă deteriorată/Însemnări)</option>
+                <option value="Noua">Nouă </option>
+                <option value="Buna">Bună </option>
+                <option value="Uzata">Uzată</option>
               </select>
             </div>
 
             <div class="form-group half">
               <label>Disponibilitate platformă</label>
               <select v-model="availability">
-                <option value="Disponibila">Disponibilă pentru împrumut</option>
-                <option value="Imprumutata">Rezervată / Împrumutată momentan</option>
+                <option value="Disponibila">Disponibilă</option>
+                <option value="Imprumutata">Indisponibilă</option>
               </select>
             </div>
           </div>
