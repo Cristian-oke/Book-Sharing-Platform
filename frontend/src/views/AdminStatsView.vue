@@ -5,7 +5,6 @@ import { token } from '../auth'
 
 const BASE_URL = 'http://localhost:5000'
 
-// Stări pentru date
 const stats = ref(null)
 const users = ref([])
 const books = ref([])
@@ -83,11 +82,11 @@ onMounted(() => {
 <template>
   <div class="admin-container">
     <header class="admin-header">
-      <h1>⚙️ Administrare Platformă</h1>
+      <h1>Administrare Platformă</h1>
     </header>
 
     <div class="admin-tabs">
-      <button :class="{ active: activeTab === 'stats' }" @click="activeTab = 'stats'">📈 Statistici</button>
+      <button :class="{ active: activeTab === 'stats' }" @click="activeTab = 'stats'">📊 Statistici</button>
       <button :class="{ active: activeTab === 'users' }" @click="activeTab = 'users'">👥 Utilizatori ({{ users.length }})</button>
       <button :class="{ active: activeTab === 'books' }" @click="activeTab = 'books'">📚 Cărți ({{ books.length }})</button>
       <button :class="{ active: activeTab === 'reviews' }" @click="activeTab = 'reviews'">⭐ Recenzii ({{ reviews.length }})</button>
@@ -109,7 +108,7 @@ onMounted(() => {
             <div class="stat-info"><span class="stat-label">Cărți pe platformă</span><span class="stat-value">{{ stats.total.books }}</span></div>
           </div>
           <div class="stat-card">
-            <span class="stat-icon">⚡</span>
+            <span class="stat-icon">🤝</span>
             <div class="stat-info"><span class="stat-label">Împrumuturi Active</span><span class="stat-value">{{ stats.live_activity.current_active_loans }}</span></div>
           </div>
           <div class="stat-card">
@@ -117,8 +116,19 @@ onMounted(() => {
            <div class="stat-info">
            <span class="stat-label">Recenzii Totale</span>
            <span class="stat-value">{{ reviews.length }}</span>
-      </div>
-    </div>
+         </div>
+         </div>
+         </div>
+
+            <div class="stats-grid-centered">
+            <div class="stat-card">
+            <span class="stat-icon">📔</span>
+            <div class="stat-info"><span class="stat-label">Cărți per user</span><span class="stat-value">{{ stats.averages.books_per_user }}</span></div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">💬</span>
+            <div class="stat-info"><span class="stat-label">Recenzii primite per user</span><span class="stat-value">{{ stats.averages.reviews_per_user }}</span></div>
+          </div>
         </div>
       </div>
 
@@ -230,6 +240,7 @@ onMounted(() => {
 .btn-delete { background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: background 0.15s; }
 .btn-delete:hover { background: #dc2626; }
 
+.stats-grid-centered {display: flex;justify-content: center; gap: 20px;margin-top: 20px;flex-wrap: wrap;}
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 .stat-card { display: flex; align-items: center; gap: 20px; background: white; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; }
 .stat-icon { font-size: 2rem; background: #f8fafc; padding: 8px; border-radius: 6px; }

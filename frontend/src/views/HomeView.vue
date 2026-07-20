@@ -184,7 +184,8 @@ const handleRequestBook = async (bookId, bookTitle) => {
 .search-input:focus { border-color: #42b983; }
 .clear-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999; }
 
-.loading-state, .api-warning { text-align: center; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+.loading-state {text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d;}
+.api-warning { text-align: center; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
 .api-warning { background-color: #fff3cd; color: #856404; font-size: 0.9rem; }
 
 .books-grid {

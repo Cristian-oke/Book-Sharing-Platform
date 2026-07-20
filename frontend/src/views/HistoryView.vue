@@ -115,10 +115,11 @@ onMounted(() => {
 </script>
 
 <template>
+  <div class="history-container">
   <div v-if="!isAuthenticated" class="centered-auth-wrapper">
     <div class="simple-redirect-box">
       <h2>Nu ești autentificat</h2>
-      <p>Trebuie să fii conectat pentru a accesa istoricul împrumuturilor.</p>
+      <p>Trebuie să fii conectat pentru a accesa istoricul împrumuturilor</p>
       <button class="btn-simple-connect" @click="goToLogin">
         Conectează-te
       </button>
@@ -126,7 +127,7 @@ onMounted(() => {
   </div>
 
   <div v-else>
-    <div class="history-container">
+    
       <header class="history-header">
         <h2>Istoric</h2>
         <p>Urmărește cererile tale/împrumuturile finalizate și returnează cărțile din împrumuturile active</p>
@@ -221,7 +222,7 @@ onMounted(() => {
         </section>
 
         <section class="history-section">
-          <h3>✅ Cărți pe care le-ai împrumutat și pe care le-ai returnat</h3>
+          <h3>🤝 Cărți pe care le-ai împrumutat și pe care le-ai returnat</h3>
           <div v-if="completedLoans.length === 0" class="empty-msg">
             Nu ai niciun împrumut finalizat.
           </div>
@@ -295,7 +296,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
 .centered-auth-wrapper {
   display: flex;
   justify-content: center;
@@ -317,6 +317,7 @@ onMounted(() => {
 .simple-redirect-box p { color: #7f8c8d; font-size: 0.95rem; margin-bottom: 25px; line-height: 1.5; }
 .btn-simple-connect { width: 100%; padding: 12px; background-color: #42b983; color: white; border: none; font-weight: bold; border-radius: 6px; cursor: pointer; font-size: 1rem; transition: background 0.2s; }
 .btn-simple-connect:hover { background-color: #35495e; }
+.loading-state {text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d;}
 
 .history-container {
   max-width: 1100px;

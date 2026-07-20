@@ -11,6 +11,7 @@ const userProfile = ref(null)
 const isLoading = ref(true)
 const errorMsg = ref('')
 
+//extragere ID din token
 const currentUserId = computed(() => {
   if (!token.value) return null
   try {
@@ -59,9 +60,12 @@ const fetchMyProfile = async () => {
     isLoading.value = false
   }
 }
+
 onMounted(() => {
   if (isAuthenticated.value) {
     fetchMyProfile()
+  } else {
+    isLoading.value = false
   }
 })
 </script>
@@ -72,7 +76,7 @@ onMounted(() => {
     <div v-if="!isAuthenticated" class="centered-auth-wrapper">
       <div class="simple-redirect-box">
         <h2>Nu ești autentificat</h2>
-        <p>Trebuie să fii conectat pentru a avea acces la profilul tău.</p>
+        <p>Trebuie să fii conectat pentru a avea acces la profilul tău</p>
         <button class="btn-simple-connect" @click="router.push('/login')">
           Conectează-te
         </button>
@@ -109,7 +113,7 @@ onMounted(() => {
             <div v-else class="books-grid">
               <div v-for="book in userProfile.books" :key="book.id" class="profile-book-card">
                 <div class="book-card-main-info">
-                  <img :src="book.image_url || '/default-image.jpg'"  class="book-card-img" />
+                  <img :src="book.image_url || '/default-image.jpg'" class="book-card-img" />
                   <div class="book-card-details">
                     <h4>{{ book.title }}</h4>
                     <p class="author">de {{ book.author }}</p>
@@ -155,7 +159,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.profile-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; }
+.profile-container { max-width: 1100px; margin: 0 auto; padding:  20px;  }
 .centered-auth-wrapper { display: flex; justify-content: center; align-items: center; min-height: 50vh; }
 .simple-redirect-box { width: 100%; max-width: 400px; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #eee; text-align: center; }
 .simple-redirect-box h2 { margin-bottom: 10px; color: #2c3e50; }

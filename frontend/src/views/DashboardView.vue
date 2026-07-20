@@ -117,7 +117,7 @@ const openEditView = (book) => {
   currentView.value = 'edit'
 }
 
-//procesare erori marshmallow si nu numai
+//procesare erori marshmallow
 const handleFormBackendError = (error) => {
   formErrors.value = []
   if (error.response && error.response.data) {
@@ -201,7 +201,7 @@ const handleRespondToRequest = async (requestId, decision) => {
     <div v-if="!isAuthenticated" class="centered-auth-wrapper">
       <div class="simple-redirect-box">
         <h2>Nu ești autentificat</h2>
-        <p>Trebuie să fii conectat pentru a avea acces la dashboard.</p>
+        <p>Trebuie să fii conectat pentru a avea acces la dashboard</p>
         <button class="btn-simple-connect" @click="router.push('/login')">
           Conectează-te
         </button>
@@ -350,9 +350,10 @@ const handleRespondToRequest = async (requestId, decision) => {
 </template>
 
 <style scoped>
-.dashboard-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+.dashboard-container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .btn-add-main { background-color: #42b983; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.loading {text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d;}
 
 .centered-auth-wrapper {
   display: flex;
