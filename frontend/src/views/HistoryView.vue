@@ -120,7 +120,7 @@ onMounted(() => {
     <div class="simple-redirect-box">
       <h2>Nu ești autentificat</h2>
       <p>Trebuie să fii conectat pentru a accesa istoricul împrumuturilor</p>
-      <button class="btn-simple-connect" @click="goToLogin">
+      <button class="btn-simple-connect" @click="router.push('/login')">
         Conectează-te
       </button>
     </div>

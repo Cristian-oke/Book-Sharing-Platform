@@ -18,6 +18,10 @@ const isAdmin = () => {
 
 const routes = [
   {
+    path: '/',
+    redirect: '/home'
+  },
+  {
     path: '/home',
     name: 'Home',
     component: () => import('../views/HomeView.vue')

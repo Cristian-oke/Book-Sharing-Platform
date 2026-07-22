@@ -211,12 +211,11 @@ const handleRespondToRequest = async (requestId, decision) => {
     <div v-else>
       <div v-if="currentView === 'list'">
         <div class="dashboard-header">
-          <h1>👋 Dashboard</h1>
-          <button class="btn-add-main" @click="openAddView">➕ Adaugă o carte nouă</button>
+          <h1>Dashboard</h1>
         </div>
-        
-        <div v-if="isLoadingDashboard" class="loading">Se încarcă datele tale...</div>
 
+        <button class="btn-add-main" @click="openAddView">Adaugă o carte nouă</button>     
+        <div v-if="isLoadingDashboard" class="loading">Se încarcă datele tale...</div>
         <div v-else class="dashboard-sections">
           
           <section class="dash-section">
@@ -253,9 +252,9 @@ const handleRespondToRequest = async (requestId, decision) => {
                 📚 <strong>{{ req.book?.title }}</strong> de {{ req.book?.author }}
               </div>
               <div class="request-actions-btns">
-                <button class="btn-req-accept" @click="handleRespondToRequest(req.request_id, 'Aprobat')">✅ Acceptă</button>
-                <button class="btn-req-reject" @click="handleRespondToRequest(req.request_id, 'Respins')">❌ Respinge</button>
-                <button class="btn-req-profile" @click="router.push(`/user/${req.requested_by?.id}`)">👀 Vezi profil</button>
+                <button class="btn-req-accept" @click="handleRespondToRequest(req.request_id, 'Aprobat')">Acceptă ✅</button>
+                <button class="btn-req-reject" @click="handleRespondToRequest(req.request_id, 'Respins')">Respinge ❌</button>
+                <button class="btn-req-profile" @click="router.push(`/user/${req.requested_by?.id}`)">Vezi profil</button>
               </div>
             </li>
           </ul>
@@ -282,7 +281,7 @@ const handleRespondToRequest = async (requestId, decision) => {
       </div>
 
       <div v-else class="form-container-box">
-        <h2>{{ currentView === 'add' ? '➕ ADAUGĂ O CARTE ' : '✏️ Modifică Detaliile Cărții' }}</h2>
+        <h2>{{ currentView === 'add' ? ' ADAUGĂ O CARTE ' : 'Modifică Detaliile Cărții' }}</h2>
         
         <div v-if="formErrors.length > 0" class="alert error">
           <ul style="list-style: none; padding:0; margin:0;">
@@ -351,9 +350,68 @@ const handleRespondToRequest = async (requestId, decision) => {
 
 <style scoped>
 .dashboard-container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.btn-add-main { background-color: #42b983; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+.dashboard-header { display: flex; justify-content: center; margin-bottom: 30px; }
 .loading {text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d;}
+
+.btn-add-main {
+  position: relative;
+  overflow: hidden;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid #2d2d2d;
+  
+  margin-left: 60px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  outline: none;
+ 
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),color 0.3s ease,border-color 0.3s ease; z-index: 1;
+}
+
+/*pt stratul auriu care avanseaza dinspre marigini spre exterior */
+.btn-add-main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 999px;
+  
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(234, 179, 8, 0) 30%,        
+    rgba(234, 179, 8, 0.15) 60%,      
+    rgba(234, 179, 8, 0.45) 100%     
+  );
+  
+  transform: scale(1.4);
+  opacity: 0;
+  
+  /* extindere/extragera simetrica */
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),opacity 0.35s ease;z-index: -1;
+}
+
+.btn-add-main:hover {
+  color: #ffffff;                    
+  border-color: rgba(234, 179, 8, 0.6); 
+  transform: translateY(-3px);  
+}
+
+.btn-add-main:hover::before {
+  transform: scale(1);          
+  opacity: 1;                       
+}
 
 .centered-auth-wrapper {
   display: flex;
@@ -387,18 +445,58 @@ const handleRespondToRequest = async (requestId, decision) => {
 .book-info strong { font-size: 0.95rem; color: #2c3e50; }
 .book-info p { margin: 2px 0; font-size: 0.85rem; color: #7f8c8d; }
 
-.book-actions { display: flex; gap: 8px; }
-.btn-edit-action { background: none; border: 1px solid #35495e; color: #35495e; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-.btn-edit-action:hover { background: #35495e; color: white; }
-.btn-delete-action { background: none; border: 1px solid #e74c3c; color: #e74c3c; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: bold; }
-.btn-delete-action:hover { background: #e74c3c; color: white; }
+.book-actions { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 8px; 
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.btn-edit-action, .btn-delete-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  
+  padding: 6px 16px;    
+  height: fit-content;   
+  
+  border-radius: 999px;
+  font-size: 0.85rem; 
+  font-weight: 600; 
+  cursor: pointer; 
+  background: transparent;
+  white-space: nowrap;   
+  transition: all 0.2s ease;
+}
+
+.btn-edit-action { 
+  border: 1px solid #35495e; 
+  color: #35495e; 
+}
+
+.btn-edit-action:hover { 
+  background: #35495e; 
+  color: white; 
+}
+
+.btn-delete-action { 
+  border: 1px solid #e74c3c; 
+  color: #e74c3c; 
+}
+
+.btn-delete-action:hover { 
+  background: #e74c3c; 
+  color: white; 
+}
 
 .badge { font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-right: 5px; }
 .badge.Disponibila { background-color: #e8f5e9; color: #2e7d32; }
 .badge.Imprumutata { background-color: #ffebee; color: #c62828; }
-.status-badge { background-color: #eaeaea; color: #555; }
+.status-badge { background-color: #eaeaea; color: #555;}
 
-/* Stiluri formulare */
+/* formular */
 .form-container-box { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #eee; }
 .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
 .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; color: #34495e; }
@@ -432,13 +530,16 @@ const handleRespondToRequest = async (requestId, decision) => {
 .request-actions-btns {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 .request-actions-btns button {
   padding: 6px 12px;
+  margin-left: -3px;
+  gap: 3px;
   font-size: 0.8rem;
   font-weight: bold;
-  border-radius: 4px;
+  border-radius: 999px;
+  white-space: nowrap;
   cursor: pointer;
   border: none;
 }

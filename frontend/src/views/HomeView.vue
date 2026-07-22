@@ -97,7 +97,6 @@ const handleRequestBook = async (bookId, bookTitle) => {
   <div class="catalog-container">
     <header class="catalog-header">
       <h2>Catalogul de Cărți</h2>
-      <p>Descoperă cărți adăugate de comunitate și cere-le la împrumut!</p>
       
       <div class="search-bar-container">
         <input 
@@ -160,14 +159,11 @@ const handleRequestBook = async (bookId, bookTitle) => {
             </div>
             
             <div class="actions-wrapper">
-              <button class="profile-btn" @click="viewOwnerProfile(book.user_id)">👤 Profil Proprietar</button>
+              <button class="profile-btn" @click="viewOwnerProfile(book.user_id)">Profil proprietar</button>
               <button 
                 v-if="book.availability === 'Disponibila'" 
                 class="request-btn" 
-                @click="handleRequestBook(book.id, book.title)"
-              >
-                ➕ Cere Cartea
-              </button>
+                @click="handleRequestBook(book.id, book.title)">Trimite o cerere</button>
             </div>
           </template>
         </div>
@@ -179,7 +175,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
 <style scoped>
 .catalog-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 .catalog-header { text-align: center; margin-bottom: 40px; }
-.search-bar-container { position: relative; max-width: 500px; margin: 20px auto 0 auto; }
+.search-bar-container { position: relative; max-width: 500px; margin: 20px auto 0 auto;margin-top:20px; }
 .search-input { width: 100%; padding: 12px 40px 12px 15px; font-size: 1rem; border: 2px solid #dee2e6; border-radius: 8px; outline: none; transition: border-color 0.2s; }
 .search-input:focus { border-color: #42b983; }
 .clear-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999; }

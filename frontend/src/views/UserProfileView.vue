@@ -88,7 +88,7 @@ onMounted(() => {
 
 <template>
   <div class="profile-container">
-    <button class="btn-back" @click="router.back()">⬅️ Înapoi</button>
+    <button class="btn-back" @click="router.back()">⬅ Back</button>
 
     <div v-if="isLoading" class="loading-box">Se încarcă profilul utilizatorului...</div>
     <div v-else-if="errorMsg" class="error-box">⚠️ {{ errorMsg }}</div>
@@ -132,7 +132,6 @@ onMounted(() => {
                 </div>
               </div>
 
-              <div class="book-card-actions">
                 <div v-if="currentUserId == book.user_id" class="own-book-profile-msg">
                   ℹ️ Această carte îți aparține
                 </div>
@@ -141,15 +140,12 @@ onMounted(() => {
                   <button 
                     v-if="book.availability === 'Disponibila'" 
                     class="btn-request-book" 
-                    @click="handleRequestBook(book.id, book.title)"
-                  >
-                    ➕ Cere Cartea
-                  </button>
+                    @click="handleRequestBook(book.id, book.title)">Trimite o cerere</button>
                   <div v-else class="borrowed-msg">
                     ❌ Momentan indisponibilă
                   </div>
                 </template>
-              </div>
+              
             </div>
           </div>
         </section>
@@ -162,7 +158,7 @@ onMounted(() => {
           <ul v-else class="reviews-list">
             <li v-for="rev in userProfile.reviews" :key="rev.id" class="review-item">
               <div class="review-top">
-                <span class="reviewer">👤 Recenzie #{{ rev.id }}</span>
+                <span class="reviewer">👤 Recenzie #{{ rev.id }} - anonim</span>
                 <span class="stars">{{ '⭐'.repeat(rev.rating) }}</span>
               </div>
               <p class="review-comment" v-if="rev.comment">„ {{ rev.comment }} ”</p>
@@ -178,8 +174,67 @@ onMounted(() => {
 
 <style scoped>
 .profile-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; font-family: sans-serif; }
-.btn-back { background: #f4f6f8; border: 1px solid #ccc; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 20px; }
-.btn-back:hover { background: #e2e6ea; }
+
+.btn-back {
+  position: relative;
+  overflow: hidden;
+  
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  background-color: #1e1e1e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid #2d2d2d;
+  
+  margin-left: 40px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  outline: none;
+ 
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),color 0.3s ease,border-color 0.3s ease; z-index: 1;
+}
+
+/*pt stratul auriu care avanseaza dinspre marigini spre exterior */
+.btn-back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 999px;
+  
+  background: radial-gradient(
+    ellipse at center, 
+    rgba(234, 179, 8, 0) 30%,        
+    rgba(234, 179, 8, 0.15) 60%,      
+    rgba(234, 179, 8, 0.45) 100%     
+  );
+  
+  transform: scale(1.4);
+  opacity: 0;
+  
+  /* extindere/extragera simetrica */
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),opacity 0.35s ease;z-index: -1;
+}
+
+.btn-back:hover {
+  color: #ffffff;                    
+  border-color: rgba(234, 179, 8, 0.6); 
+  transform: translateY(-3px);  
+}
+
+.btn-back:hover::before {
+  transform: scale(1);          
+  opacity: 1;                       
+}
+
 
 .profile-header { display: flex; align-items: center; gap: 25px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; margin-bottom: 30px; }
 .avatar-dummy { font-size: 4rem; background: #eaedd0; padding: 10px 20px; border-radius: 50%; }
@@ -206,7 +261,7 @@ onMounted(() => {
 .badge.Imprumutata { background-color: #ffebee; color: #c62828; }
 .status-badge { background-color: #eaeaea; color: #555; }
 
-.btn-request-book { background: #42b983; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-align: center; margin-top: auto; }
+.btn-request-book { display: flex;justify-content:center;background: #42b983; color: white; border: none; padding: 6px 14px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer; text-align: center; margin-top: auto; }
 .btn-request-book:hover { background: #3aa876; }
 
 .reviews-list { list-style: none; padding: 0; margin: 0; }
