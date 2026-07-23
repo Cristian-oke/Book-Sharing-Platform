@@ -129,7 +129,7 @@ onMounted(() => {
   <div v-else>
     
       <header class="history-header">
-        <h2>Istoric</h2>
+        <h1>Istoric</h1>
         <p>Urmărește cererile tale/împrumuturile finalizate și returnează cărțile din împrumuturile active</p>
       </header>
 
@@ -152,9 +152,7 @@ onMounted(() => {
                 <small>De la: <strong>{{ loan?.owner_name || 'Anonim' }}</strong></small>
                 <small class="date">Împrumutat la: {{ formatDate(loan?.start_date) }}</small>
               </div>
-              <button class="btn-return" @click="openReturnModal(loan)">
-                ↩️ Returnează cartea
-              </button>
+              <button class="btn-return" @click="openReturnModal(loan)">Returnează cartea</button>
             </div>
           </div>
         </section>
@@ -170,7 +168,7 @@ onMounted(() => {
                 <tr>
                   <th>Carte</th>
                   <th>Cine cere</th>
-                  <th>Dată Cerere</th>
+                  <th>Dată cerere</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -201,7 +199,7 @@ onMounted(() => {
                 <tr>
                   <th>Carte</th>
                   <th>Proprietar</th>
-                  <th>Dată Cerere</th>
+                  <th>Dată cerere</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -232,8 +230,8 @@ onMounted(() => {
                 <tr>
                   <th>Carte</th>
                   <th>Proprietar</th>
-                  <th>Dată Început</th>
-                  <th>Dată Returnare</th>
+                  <th>Dată început</th>
+                  <th>Dată returnare</th>
                 </tr>
               </thead>
               <tbody>
@@ -266,28 +264,23 @@ onMounted(() => {
                 :key="star" 
                 class="interactive-star"
                 :class="{ 'filled': star <= reviewRating }"
-                @click="reviewRating = star"
-              >
-                ★
-              </span>
+                @click="reviewRating = star">★</span>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="review-comment">Mesaj (opțional):</label>
+            <label2 for="review-comment">Mesaj (opțional):</label2>
             <textarea 
               id="review-comment" 
               v-model="reviewComment" 
-              placeholder="Scrie câteva cuvinte despre starea cărții..."
+              placeholder="Scrie câteva cuvinte despre experiența cu utilizatorul..."
               rows="3"
             ></textarea>
           </div>
 
           <div class="modal-buttons">
             <button class="btn-cancel" @click="closeReturnModal">Anulează</button>
-            <button class="btn-submit-return" @click="submitReturn">
-              💾 Trimite Review și Returnează
-            </button>
+            <button class="btn-submit-return" @click="submitReturn">Postează review și returnează cartea</button>
           </div>
         </div>
       </div>
@@ -397,13 +390,13 @@ onMounted(() => {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   background: #fafafa;
 }
 
 .loan-card-info h4 {
   margin: 0 0 5px 0;
 }
+.loan-card-info p{margin-top:-2px}
 
 .loan-card-info small {
   display: block;
@@ -448,6 +441,10 @@ onMounted(() => {
   max-width: 450px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
+.modal-content h3 {
+  text-align: center;
+  margin-bottom: 15px;
+}
 
 .star-rating-selector {
   display: flex;
@@ -471,6 +468,11 @@ onMounted(() => {
 }
 
 .form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: -15px;
+}
+.form-group label2{
   display: block;
   font-weight: bold;
   margin-bottom: 5px;

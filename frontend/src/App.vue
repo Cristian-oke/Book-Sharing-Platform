@@ -25,9 +25,9 @@ const isAdmin = computed(() => {
 const handleAuthClick = () => {
   if (isAuthenticated.value) {
     logout()
-    router.push('/home')
+    window.location.href = '/home'
   } else {
-    router.push('/login')
+    window.location.href = '/login'
   }
 }
 </script>
@@ -84,7 +84,7 @@ const handleAuthClick = () => {
   justify-content: space-between;
   align-items: center;
   padding: 15px 50px;
-  background-color: #dfdcdc;
+  background-color: #ece6e6;
   border-bottom: 1px solid #e2e8f0;
   border-radius: 999px;    
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* umbra la scroll */

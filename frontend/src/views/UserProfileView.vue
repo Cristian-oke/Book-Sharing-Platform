@@ -127,7 +127,7 @@ onMounted(() => {
                     <span class="badge" :class="book.availability === 'Disponibila' ? 'Disponibila' : 'Imprumutata'">
                       {{ book.availability === 'Disponibila' ? 'Disponibilă' : 'Indisponibilă' }}
                     </span>
-                    <span class="badge status-badge">✨ {{ book.status }}</span>
+                    <span class="badge status-badge">{{ book.status }}</span>
                   </div>
                 </div>
               </div>
@@ -162,6 +162,7 @@ onMounted(() => {
                 <span class="stars">{{ '⭐'.repeat(rev.rating) }}</span>
               </div>
               <p class="review-comment" v-if="rev.comment">„ {{ rev.comment }} ”</p>
+              <p class="review-comment no-comment" v-else>Fără mesaj</p>
               <small class="review-date" v-if="rev.created_at">{{ new Date(rev.created_at).toLocaleDateString() }}</small>
             </li>
           </ul>
@@ -271,6 +272,7 @@ onMounted(() => {
 .reviewer { font-weight: bold; font-size: 0.9rem; color: #34495e; }
 .stars { font-size: 0.85rem; }
 .review-comment { margin: 0; font-style: italic; color: #555; font-size: 0.88rem; line-height: 1.4; }
+.review-comment.no-comment {color: #a0aec0;font-style: italic;}
 
 .empty-msg { color: #95a5a6; font-style: italic; font-size: 0.9rem; margin-top: 15px; }
 .loading-box, .error-box { text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d; }

@@ -214,7 +214,10 @@ const handleRespondToRequest = async (requestId, decision) => {
           <h1>Dashboard</h1>
         </div>
 
-        <button class="btn-add-main" @click="openAddView">Adaugă o carte nouă</button>     
+        <div class="dashboard-actions-row">
+          <button class="btn-add-main" @click="openAddView">Adaugă o carte nouă</button>
+          <button class="btn-history-secondary" @click="router.push('/history')">Returnează o carte împrumutată </button>
+        </div>     
         <div v-if="isLoadingDashboard" class="loading">Se încarcă datele tale...</div>
         <div v-else class="dashboard-sections">
           
@@ -261,7 +264,7 @@ const handleRespondToRequest = async (requestId, decision) => {
         </section>
 
         <section class="dash-section">
-          <h3>📤 Cererile mele active trimise către alții</h3>
+          <h3 class="h3-lung">📤 Cererile mele active trimise către alții</h3>
           <div v-if="pendingOutgoingRequests.length === 0" class="empty-list">
             Nu ai nicio cerere trimisă care se află în așteptare.
           </div>
@@ -353,7 +356,15 @@ const handleRespondToRequest = async (requestId, decision) => {
 .dashboard-header { display: flex; justify-content: center; margin-bottom: 30px; }
 .loading {text-align: center; padding: 40px; font-weight: bold; color: #7f8c8d;}
 
-.btn-add-main {
+.dashboard-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 25px;         
+}
+
+.btn-add-main,.btn-history-secondary {
   position: relative;
   overflow: hidden;
   
@@ -379,7 +390,7 @@ const handleRespondToRequest = async (requestId, decision) => {
 }
 
 /*pt stratul auriu care avanseaza dinspre marigini spre exterior */
-.btn-add-main::before {
+.btn-add-main::before,.btn-history-secondary::before {
   content: '';
   position: absolute;
   top: 0;
@@ -402,13 +413,13 @@ const handleRespondToRequest = async (requestId, decision) => {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),opacity 0.35s ease;z-index: -1;
 }
 
-.btn-add-main:hover {
+.btn-add-main:hover,.btn-history-secondary:hover {
   color: #ffffff;                    
   border-color: rgba(234, 179, 8, 0.6); 
   transform: translateY(-3px);  
 }
 
-.btn-add-main:hover::before {
+.btn-add-main:hover::before,.btn-history-secondary:hover::before {
   transform: scale(1);          
   opacity: 1;                       
 }
@@ -436,8 +447,8 @@ const handleRespondToRequest = async (requestId, decision) => {
 
 .dashboard-sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
 .dash-section { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid #eee; }
-.dash-section h3 { border-bottom: 2px solid #f4f6f8; padding-bottom: 10px; margin-top: 0; color: #2c3e50; }
-
+.dash-section h3 { border-bottom: 2px solid #f4f6f8; padding-bottom: 10px; margin-top: 0;text-align:center; color: #2c3e50;white-space: nowrap; }
+.dash-section h3.h3-lung { margin-left: -8px;text-align: left; }
 .book-list { list-style: none; padding: 0; margin: 0; }
 .book-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f4f6f8; }
 .book-info { display: flex; align-items: center; gap: 12px; }
@@ -498,6 +509,7 @@ const handleRespondToRequest = async (requestId, decision) => {
 
 /* formular */
 .form-container-box { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #eee; }
+.form-container-box h2{text-align: center;margin-bottom: 15px;}
 .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
 .form-group label { font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; color: #34495e; }
 .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.95rem; }

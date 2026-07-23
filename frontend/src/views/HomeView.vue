@@ -96,7 +96,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
 <template>
   <div class="catalog-container">
     <header class="catalog-header">
-      <h2>Catalogul de Cărți</h2>
+      <h1>Catalogul de cărți</h1>
       
       <div class="search-bar-container">
         <input 
@@ -117,7 +117,7 @@ const handleRequestBook = async (bookId, bookTitle) => {
     </div>
 
     <div v-if="!isLoading && filteredBooks.length === 0" class="no-results">
-      <p>Nu am găsit nicio carte care să corespundă căutării tale. 🔍</p>
+      <p>Nu am găsit nicio carte care să corespundă căutării tale  🔍</p>
     </div>
 
     <div v-if="!isLoading && filteredBooks.length > 0" class="books-grid">
@@ -175,7 +175,9 @@ const handleRequestBook = async (bookId, bookTitle) => {
 <style scoped>
 .catalog-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
 .catalog-header { text-align: center; margin-bottom: 40px; }
-.search-bar-container { position: relative; max-width: 500px; margin: 20px auto 0 auto;margin-top:20px; }
+.catalog-header h1 {margin-bottom: 30px;}
+.search-bar-container { position: relative; max-width: 500px; margin: 20px auto 0 auto;margin-top:20px;}
+.search-bar-container input {width: 100%;padding: 10px 20px;border-radius: 999px;border: 1px solid #2d2d2d;outline: none;font-size: 0.95rem;transition: all 0.25s ease;}
 .search-input { width: 100%; padding: 12px 40px 12px 15px; font-size: 1rem; border: 2px solid #dee2e6; border-radius: 8px; outline: none; transition: border-color 0.2s; }
 .search-input:focus { border-color: #42b983; }
 .clear-btn { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #999; }
